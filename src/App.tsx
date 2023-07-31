@@ -1,15 +1,10 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Pokemon, deck$, selected$, pokemon$ } from './store';
 import { useObservableState } from 'observable-hooks';
+import { useEffect, useMemo, useState } from 'react';
+import { deck$, pokemon$, selected$ } from './store';
 
 export const Search = () => {
   const [search, setSearch] = useState('');
-  const [pokemon, setPokemon] = useState<Pokemon[]>([]);
-
-  useEffect(() => {
-    const sub = pokemon$.subscribe(setPokemon);
-    return () => sub.unsubscribe();
-  }, []);
+  const pokemon = useObservableState(pokemon$, []);
 
   const filteredPokemon = useMemo(() => {
     return pokemon.filter((p) =>
