@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Pokemon, pokemonWithPower$ } from './store';
+import { Pokemon, pokemonWithPower$, selected$ } from './store';
 
 export const Search = () => {
   const [search, setSearch] = useState('');
   const [pokemon, setPokemon] = useState<Pokemon[]>([]);
 
   useEffect(() => {
-    pokemonWithPower$.subscribe(setPokemon);
+    const sub = pokemonWithPower$.subscribe(setPokemon);
+    return () => sub.unsubscribe();
   }, []);
 
   const filteredPokemon = useMemo(() => {
@@ -25,7 +26,22 @@ export const Search = () => {
       <div>
         {filteredPokemon.map((p) => (
           <div key={p.name}>
-            <strong>{p.name}</strong>- {p.power}
+            <label>
+              <input
+                type='checkbox'
+                checked={selected$.value.includes(p.id)}
+                onChange={() => {
+                  if (selected$.value.includes(p.id)) {
+                    selected$.next(selected$.value.filter((id) => id !== p.id));
+                  } else {
+                    selected$.next([...selected$.value, p.id]);
+                  }
+                }}
+              />
+              <span className='checkable'>
+                <strong>{p.name}</strong>- {p.power}
+              </span>
+            </label>
           </div>
         ))}
       </div>
