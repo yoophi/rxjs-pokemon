@@ -1,9 +1,10 @@
 import { useObservableState } from 'observable-hooks';
 import { useEffect, useMemo, useState } from 'react';
-import { deck$, pokemon$, selected$ } from './store';
+import { PokemonProvider, usePokemon } from './store';
 
 export const Search = () => {
   const [search, setSearch] = useState('');
+  const { pokemon$, selected$ } = usePokemon();
   const pokemon = useObservableState(pokemon$, []);
 
   const filteredPokemon = useMemo(() => {
@@ -46,6 +47,7 @@ export const Search = () => {
 };
 
 const Deck = () => {
+  const { deck$ } = usePokemon();
   const deck = useObservableState(deck$, []);
   return (
     <div>
@@ -66,12 +68,13 @@ const Deck = () => {
 };
 
 function App() {
+  const { pokemon$ } = usePokemon();
   useEffect(() => {
     pokemon$.subscribe(console.log);
   }, []);
 
   return (
-    <>
+    <PokemonProvider>
       <div className='flex two demo'>
         <div>
           <Search />
@@ -80,7 +83,7 @@ function App() {
           <Deck />
         </div>
       </div>
-    </>
+    </PokemonProvider>
   );
 }
 
