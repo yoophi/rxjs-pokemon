@@ -40,6 +40,10 @@ export const pokemon$ = pokemonWithPower$.pipe(
   )
 );
 
+export const deck$ = pokemon$.pipe(
+  map((pokemon) => pokemon.filter((p) => p.selected))
+);
+
 fetch('/pokemon-simplified.json')
   .then((res) => res.json())
   .then((data) => rawPokemon$.next(data));
