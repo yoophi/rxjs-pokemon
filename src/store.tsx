@@ -1,4 +1,4 @@
-import { BehaviorSubject, combineLatest, combineLatestWith, map } from 'rxjs';
+import { BehaviorSubject, combineLatestWith, map } from 'rxjs';
 
 export interface Pokemon {
   id: number;
@@ -16,7 +16,7 @@ export interface Pokemon {
 
 const rawPokemon$ = new BehaviorSubject<Pokemon[]>([]);
 
-export const pokemonWithPower$ = rawPokemon$.pipe(
+const pokemonWithPower$ = rawPokemon$.pipe(
   map((pokemon) =>
     pokemon.map((p) => ({
       ...p,

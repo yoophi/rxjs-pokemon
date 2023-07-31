@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Pokemon, pokemonWithPower$, selected$ } from './store';
+import { Pokemon, selected$, pokemon$ } from './store';
 
 export const Search = () => {
   const [search, setSearch] = useState('');
   const [pokemon, setPokemon] = useState<Pokemon[]>([]);
 
   useEffect(() => {
-    const sub = pokemonWithPower$.subscribe(setPokemon);
+    const sub = pokemon$.subscribe(setPokemon);
     return () => sub.unsubscribe();
   }, []);
 
@@ -29,7 +29,7 @@ export const Search = () => {
             <label>
               <input
                 type='checkbox'
-                checked={selected$.value.includes(p.id)}
+                checked={p.selected}
                 onChange={() => {
                   if (selected$.value.includes(p.id)) {
                     selected$.next(selected$.value.filter((id) => id !== p.id));
@@ -51,7 +51,7 @@ export const Search = () => {
 
 function App() {
   useEffect(() => {
-    pokemonWithPower$.subscribe(console.log);
+    pokemon$.subscribe(console.log);
   }, []);
 
   return (
