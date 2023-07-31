@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
-import { rawPokemon$ } from './store';
+import { pokemonWithPower$ } from './store';
 
 function App() {
   useEffect(() => {
-    rawPokemon$.subscribe(console.log);
+    pokemonWithPower$.subscribe(console.log);
   }, []);
 
   return (
