@@ -1,24 +1,31 @@
 import { useObservableState } from 'observable-hooks';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
+import { BehaviorSubject, combineLatestWith, map } from 'rxjs';
 import { Pokemon, usePokemon } from './store';
 
 export function Search() {
-  const [search, setSearch] = useState('');
   const { pokemon$, selected$ } = usePokemon();
-  const pokemon = useObservableState(pokemon$, []);
+  const search$ = useMemo(() => new BehaviorSubject(''), []);
 
-  const filteredPokemon = useMemo(() => {
-    return pokemon.filter((p) =>
-      p.name.toLowerCase().includes(search.toLowerCase())
-    );
-  }, [pokemon, search]);
+  const [filteredPokemon] = useObservableState(
+    () =>
+      pokemon$.pipe(
+        combineLatestWith(search$),
+        map(([pokemon, search]) =>
+          pokemon.filter((p) =>
+            p.name.toLowerCase().includes(search.toLowerCase())
+          )
+        )
+      ),
+    []
+  );
 
   return (
     <div>
       <input
         type='text'
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
+        value={search$.value}
+        onChange={(e) => search$.next(e.target.value)}
       />
       <div>
         {filteredPokemon.map((p: Pokemon) => (
