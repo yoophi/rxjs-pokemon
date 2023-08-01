@@ -32,16 +32,16 @@ const pokemonWithPower$ = rawPokemon$.pipe(
   )
 );
 
-export const selected$ = new BehaviorSubject<number[]>([]);
+const selected$ = new BehaviorSubject<number[]>([]);
 
-export const pokemon$ = pokemonWithPower$.pipe(
+const pokemon$ = pokemonWithPower$.pipe(
   combineLatestWith(selected$),
   map(([pokemon, selected]) =>
     pokemon.map((p) => ({ ...p, selected: selected.includes(p.id) }))
   )
 );
 
-export const deck$ = pokemon$.pipe(
+const deck$ = pokemon$.pipe(
   map((pokemon) => pokemon.filter((p) => p.selected))
 );
 
@@ -56,18 +56,16 @@ const PokemonContext = createContext({
 });
 
 export const usePokemon = () => useContext(PokemonContext);
-export const PokemonProvider: React.FunctionComponent = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => (
-  <PokemonContext.Provider
-    value={{
-      pokemon$,
-      selected$,
-      deck$,
-    }}
-  >
-    {children}
-  </PokemonContext.Provider>
-);
+export const PokemonProvider: React.FunctionComponent = ({ children }) => {
+  return (
+    <PokemonContext.Provider
+      value={{
+        pokemon$,
+        selected$,
+        deck$,
+      }}
+    >
+      {children}
+    </PokemonContext.Provider>
+  );
+};
